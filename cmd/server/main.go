@@ -13,7 +13,13 @@ func main() {
 
 	r := gin.Default()
 	pr := r.Group("/products")
-	pr.GET("/", productsController.ValidateToken, productsController.GetAll())
-	pr.POST("/", productsController.ValidateToken, productsController.Store())
+	{
+		pr.GET("/", productsController.ValidateToken, productsController.GetAll())
+		pr.POST("/", productsController.ValidateToken, productsController.Store())
+		pr.PUT("/:id", productsController.ValidateToken, productsController.Update())
+		pr.DELETE("/:id", productsController.ValidateToken, productsController.Delete(false))
+		pr.DELETE("/hardDelete/:id", productsController.ValidateToken, productsController.Delete(true))
+		pr.PATCH("/:id", productsController.ValidateToken, productsController.UpdateNameAndPrice())
+	}
 	r.Run()
 }
