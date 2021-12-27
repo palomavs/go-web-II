@@ -1,13 +1,12 @@
 package handler
 
 import (
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/palomavs/go-web-II/internal/products"
 )
-
-const TOKEN = "1A2B3C45D6"
 
 type request struct {
 	Id           int     `json:"id"`
@@ -205,7 +204,7 @@ func (c *Product) UpdateNameAndPrice() gin.HandlerFunc {
 
 func (c *Product) ValidateToken(ctx *gin.Context) {
 	token := ctx.GetHeader("token")
-	if token != TOKEN {
+	if token != os.Getenv("TOKEN") {
 		ctx.AbortWithStatusJSON(401, gin.H{"error": "no tiene permisos para realizar la petición solicitada"})
 		return
 	}
