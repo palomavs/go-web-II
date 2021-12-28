@@ -30,6 +30,16 @@ func NewProduct(p products.Service) *Product {
 	return &Product{service: p}
 }
 
+// ListProducts godoc
+// @Summary Lists products
+// @Tags Products
+// @Description get products
+// @Accept json
+// @Produce json
+// @Param token header string true "token"
+// @Success 200 {object} web.Response
+// @Failure 404 {object} web.Response
+// @Router /products [get]
 func (c *Product) GetAll() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		products, err := c.service.GetAll(context.Background())
@@ -42,6 +52,17 @@ func (c *Product) GetAll() gin.HandlerFunc {
 	}
 }
 
+// StoreProducts godoc
+// @Summary Store products
+// @Tags Products
+// @Description store products
+// @Accept json
+// @Produce json
+// @Param token header string true "token"
+// @Param product body request true "Product to store"
+// @Success 200 {object} web.Response
+// @Failure 400 {object} web.Response
+// @Router /products [post]
 func (c *Product) Store() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req request
@@ -89,6 +110,17 @@ func (c *Product) Store() gin.HandlerFunc {
 	}
 }
 
+// DeleteProducts godoc
+// @Summary Removes product based on given ID
+// @Tags Products
+// @Description removes products
+// @Produce json
+// @Param token header string true "token"
+// @Param id path integer true "product id to be removed"
+// @Success 200 {object} web.Response
+// @Failure 400 {object} web.Response
+// @Failure 404 {object} web.Response
+// @Router /products/{id} [delete]
 func (c *Product) Delete(hardDelete bool) gin.HandlerFunc {
 	if hardDelete {
 		return func(ctx *gin.Context) {
@@ -125,6 +157,18 @@ func (c *Product) Delete(hardDelete bool) gin.HandlerFunc {
 	}
 }
 
+// UpdateProducts godoc
+// @Summary Updates product based on given ID
+// @Tags Products
+// @Description updates products
+// @Accept json
+// @Produce json
+// @Param token header string true "token"
+// @Param id path integer true "product id to be updated"
+// @Success 200 {object} web.Response
+// @Failure 400 {object} web.Response
+// @Failure 404 {object} web.Response
+// @Router /products/{id} [put]
 func (c *Product) Update() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
@@ -176,6 +220,19 @@ func (c *Product) Update() gin.HandlerFunc {
 		ctx.JSON(200, web.NewResponse(200, productUpdated, ""))
 	}
 }
+
+// UpdateNameAndPriceProducts godoc
+// @Summary Updates name and price of product based on given ID
+// @Tags Products
+// @Description updates name and price of products
+// @Accept json
+// @Produce json
+// @Param token header string true "token"
+// @Param id path integer true "product id to be updated"
+// @Success 200 {object} web.Response
+// @Failure 400 {object} web.Response
+// @Failure 404 {object} web.Response
+// @Router /products/{id} [patch]
 func (c *Product) UpdateNameAndPrice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
