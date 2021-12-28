@@ -58,6 +58,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/web.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.Response'
       summary: Lists products
       tags:
       - Products
@@ -88,10 +92,6 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/web.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.Response'
       summary: Store products
       tags:
       - Products
@@ -114,6 +114,14 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/web.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.Response'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/web.Response'
       summary: Removes product based on given ID
@@ -141,6 +149,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/web.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.Response'
       summary: Updates name and price of product based on given ID
       tags:
       - Products
@@ -164,6 +180,14 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/web.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.Response'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/web.Response'
       summary: Updates product based on given ID
