@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/palomavs/go-web-II/internal/products"
+	"github.com/palomavs/go-web-II/pkg/web"
 )
 
 type request struct {
@@ -33,11 +34,11 @@ func (c *Product) GetAll() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		products, err := c.service.GetAll(context.Background())
 		if err != nil {
-			ctx.JSON(404, gin.H{"error": err.Error()})
+			ctx.JSON(404, web.NewResponse(404, nil, err.Error()))
 			return
 		}
 
-		ctx.JSON(200, products)
+		ctx.JSON(200, web.NewResponse(200, products, ""))
 	}
 }
 
@@ -46,33 +47,33 @@ func (c *Product) Store() gin.HandlerFunc {
 		var req request
 
 		if err := ctx.ShouldBindJSON(&req); err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
+			ctx.JSON(400, web.NewResponse(400, nil, err.Error()))
 			return
 		}
 
-		{ // Validaciones - se podría hacer con el required pero choca con el patch
+		{
 			if req.Name == "" {
-				ctx.JSON(400, gin.H{"error": "debe proveer un nombre de producto"})
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un nombre de producto"))
 				return
 			}
 			if req.Color == "" {
-				ctx.JSON(400, gin.H{"error": "debe proveer un color para el producto"})
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un color para el producto"))
 				return
 			}
 			if req.Price == 0 {
-				ctx.JSON(400, gin.H{"error": "debe proveer un precio para el producto"})
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un precio para el producto"))
 				return
 			}
 			if req.Stock == 0 {
-				ctx.JSON(400, gin.H{"error": "debe proveer un stock para el producto"})
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un stock para el producto"))
 				return
 			}
 			if req.Code == "" {
-				ctx.JSON(400, gin.H{"error": "debe proveer un código para el producto"})
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un código para el producto"))
 				return
 			}
 			if req.CreationDate == "" {
-				ctx.JSON(400, gin.H{"error": "debe proveer una fecha de creación para el producto"})
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer una fecha de creación para el producto"))
 				return
 			}
 		}
@@ -80,62 +81,11 @@ func (c *Product) Store() gin.HandlerFunc {
 		newProduct, err := c.service.Store(context.Background(), req.Name, req.Color, req.Price, req.Stock, req.Code, req.Published, req.CreationDate, req.Active)
 
 		if err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
+			ctx.JSON(400, web.NewResponse(400, nil, err.Error()))
 			return
 		}
 
-		ctx.JSON(200, newProduct)
-	}
-}
-
-func (c *Product) Update() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
-		if err != nil {
-			ctx.JSON(400, gin.H{"error": "invalid ID"})
-			return
-		}
-
-		var req request
-		if err = ctx.ShouldBindJSON(&req); err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
-			return
-		}
-
-		{ // Validaciones - se podría hacer con el required pero choca con el patch
-			if req.Name == "" {
-				ctx.JSON(400, gin.H{"error": "debe proveer un nombre de producto"})
-				return
-			}
-			if req.Color == "" {
-				ctx.JSON(400, gin.H{"error": "debe proveer un color para el producto"})
-				return
-			}
-			if req.Price == 0 {
-				ctx.JSON(400, gin.H{"error": "debe proveer un precio para el producto"})
-				return
-			}
-			if req.Stock == 0 {
-				ctx.JSON(400, gin.H{"error": "debe proveer un stock para el producto"})
-				return
-			}
-			if req.Code == "" {
-				ctx.JSON(400, gin.H{"error": "debe proveer un código para el producto"})
-				return
-			}
-			if req.CreationDate == "" {
-				ctx.JSON(400, gin.H{"error": "debe proveer una fecha de creación para el producto"})
-				return
-			}
-		}
-
-		productUpdated, err := c.service.Update(context.Background(), int(id), req.Name, req.Color, req.Price, req.Stock, req.Code, req.Published, req.CreationDate, req.Active)
-
-		if err != nil {
-			ctx.JSON(404, gin.H{"error": err.Error()})
-			return
-		}
-		ctx.JSON(200, productUpdated)
+		ctx.JSON(200, web.NewResponse(200, newProduct, ""))
 	}
 }
 
@@ -144,73 +94,125 @@ func (c *Product) Delete(hardDelete bool) gin.HandlerFunc {
 		return func(ctx *gin.Context) {
 			id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 			if err != nil {
-				ctx.JSON(400, gin.H{"error": "invalid ID"})
+				ctx.JSON(400, web.NewResponse(400, nil, "invalid ID"))
 				return
 			}
 
 			products, err := c.service.HardDelete(context.Background(), int(id))
-
 			if err != nil {
-				ctx.JSON(404, gin.H{"error": err.Error()})
+				ctx.JSON(404, web.NewResponse(404, nil, err.Error()))
 				return
 			}
 
-			ctx.JSON(200, products)
+			ctx.JSON(200, web.NewResponse(200, products, ""))
 			//ctx.JSON(200, gin.H{"data": fmt.Sprintf("El producto %d ha sido eliminado", id)})
 		}
 	} else {
 		return func(ctx *gin.Context) {
 			id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 			if err != nil {
-				ctx.JSON(400, gin.H{"error": "invalid ID"})
+				ctx.JSON(400, web.NewResponse(400, nil, "invalid ID"))
 				return
 			}
 
 			products, err := c.service.Delete(context.Background(), int(id))
 			if err != nil {
-				ctx.JSON(404, gin.H{"error": err.Error()})
+				ctx.JSON(404, web.NewResponse(404, nil, err.Error()))
 				return
 			}
-
-			ctx.JSON(200, products)
+			ctx.JSON(200, web.NewResponse(200, products, ""))
 		}
 	}
 }
 
+func (c *Product) Update() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+		if err != nil {
+			ctx.JSON(400, web.NewResponse(400, nil, "invalid ID"))
+			return
+		}
+
+		var req request
+		if err = ctx.ShouldBindJSON(&req); err != nil {
+			ctx.JSON(400, web.NewResponse(400, nil, err.Error()))
+			return
+		}
+
+		{
+			if req.Name == "" {
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un nombre de producto"))
+				return
+			}
+			if req.Color == "" {
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un color para el producto"))
+				return
+			}
+			if req.Price == 0 {
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un precio para el producto"))
+				return
+			}
+			if req.Stock == 0 {
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un stock para el producto"))
+				return
+			}
+			if req.Code == "" {
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un código para el producto"))
+				return
+			}
+			if req.CreationDate == "" {
+				ctx.JSON(400, web.NewResponse(400, nil, "debe proveer una fecha de creación para el producto"))
+				return
+			}
+		}
+
+		productUpdated, err := c.service.Update(context.Background(), int(id), req.Name, req.Color, req.Price, req.Stock, req.Code, req.Published, req.CreationDate, req.Active)
+
+		if err != nil {
+			ctx.JSON(404, web.NewResponse(404, nil, err.Error()))
+			return
+		}
+
+		ctx.JSON(200, web.NewResponse(200, productUpdated, ""))
+	}
+}
 func (c *Product) UpdateNameAndPrice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 		if err != nil {
-			ctx.JSON(400, gin.H{"error": "invalid ID"})
+			ctx.JSON(400, web.NewResponse(400, nil, "invalid ID"))
 			return
 		}
 
 		var req request
 		if err := ctx.ShouldBindJSON(&req); err != nil {
-			ctx.JSON(400, gin.H{"error": err.Error()})
+			ctx.JSON(400, web.NewResponse(400, nil, err.Error()))
 			return
 		}
 
-		if req.Name == "" || req.Price == 0 {
-			ctx.JSON(400, gin.H{"error": "debe proveer un nombre y precio válidos"})
-
+		if req.Name == "" {
+			ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un nombre de producto"))
+			return
+		}
+		if req.Price == 0 {
+			ctx.JSON(400, web.NewResponse(400, nil, "debe proveer un precio para el producto"))
 			return
 		}
 
 		updatedProduct, err := c.service.UpdateNameAndPrice(context.Background(), int(id), req.Name, req.Price)
 		if err != nil {
-			ctx.JSON(404, gin.H{"error": err.Error()})
+			ctx.JSON(404, web.NewResponse(404, nil, err.Error()))
 			return
 		}
 
-		ctx.JSON(200, updatedProduct)
+		ctx.JSON(200, web.NewResponse(200, updatedProduct, ""))
 	}
 }
 
 func (c *Product) ValidateToken(ctx *gin.Context) {
 	token := ctx.GetHeader("token")
 	if token != os.Getenv("TOKEN") {
-		ctx.AbortWithStatusJSON(401, gin.H{"error": "no tiene permisos para realizar la petición solicitada"})
+		ctx.AbortWithStatusJSON(401, web.NewResponse(401, nil, "no tiene permisos para realizar la petición solicitada"))
 		return
 	}
 }

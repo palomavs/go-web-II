@@ -1,7 +1,7 @@
 [
  {
   "id": 1,
-  "name": "prod-1",
+  "name": "prod1",
   "color": "celeste",
   "price": 834.33,
   "stock": 100,
@@ -13,23 +13,12 @@
  {
   "id": 2,
   "name": "prod2",
-  "color": "lila",
-  "price": 834.33,
-  "stock": 100,
-  "code": "1TY4P",
+  "color": "verde",
+  "price": 14.23,
+  "stock": 150,
+  "code": "2TF6Q",
   "published": true,
   "creationDate": "13-12-2021",
   "active": true
- },
- {
-  "id": 3,
-  "name": "prod4",
-  "color": "rosa",
-  "price": 834.33,
-  "stock": 100,
-  "code": "1TY4P",
-  "published": true,
-  "creationDate": "13-12-2021",
-  "active": false
  }
 ]
