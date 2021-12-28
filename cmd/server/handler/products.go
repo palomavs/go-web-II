@@ -78,6 +78,7 @@ func (c *Product) Store() gin.HandlerFunc {
 		}
 
 		newProduct, err := c.service.Store(context.Background(), req.Name, req.Color, req.Price, req.Stock, req.Code, req.Published, req.CreationDate, req.Active)
+
 		if err != nil {
 			ctx.JSON(400, gin.H{"error": err.Error()})
 			return
@@ -129,6 +130,7 @@ func (c *Product) Update() gin.HandlerFunc {
 		}
 
 		productUpdated, err := c.service.Update(context.Background(), int(id), req.Name, req.Color, req.Price, req.Stock, req.Code, req.Published, req.CreationDate, req.Active)
+
 		if err != nil {
 			ctx.JSON(404, gin.H{"error": err.Error()})
 			return
@@ -147,6 +149,7 @@ func (c *Product) Delete(hardDelete bool) gin.HandlerFunc {
 			}
 
 			products, err := c.service.HardDelete(context.Background(), int(id))
+
 			if err != nil {
 				ctx.JSON(404, gin.H{"error": err.Error()})
 				return
@@ -190,6 +193,7 @@ func (c *Product) UpdateNameAndPrice() gin.HandlerFunc {
 
 		if req.Name == "" || req.Price == 0 {
 			ctx.JSON(400, gin.H{"error": "debe proveer un nombre y precio válidos"})
+
 			return
 		}
 
