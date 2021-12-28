@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"os"
 	"strconv"
 
@@ -30,7 +31,7 @@ func NewProduct(p products.Service) *Product {
 
 func (c *Product) GetAll() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		products, err := c.service.GetAll()
+		products, err := c.service.GetAll(context.Background())
 		if err != nil {
 			ctx.JSON(404, gin.H{"error": err.Error()})
 			return
@@ -76,7 +77,7 @@ func (c *Product) Store() gin.HandlerFunc {
 			}
 		}
 
-		newProduct, err := c.service.Store(req.Name, req.Color, req.Price, req.Stock, req.Code, req.Published, req.CreationDate, req.Active)
+		newProduct, err := c.service.Store(context.Background(), req.Name, req.Color, req.Price, req.Stock, req.Code, req.Published, req.CreationDate, req.Active)
 		if err != nil {
 			ctx.JSON(400, gin.H{"error": err.Error()})
 			return
@@ -127,7 +128,7 @@ func (c *Product) Update() gin.HandlerFunc {
 			}
 		}
 
-		productUpdated, err := c.service.Update(int(id), req.Name, req.Color, req.Price, req.Stock, req.Code, req.Published, req.CreationDate, req.Active)
+		productUpdated, err := c.service.Update(context.Background(), int(id), req.Name, req.Color, req.Price, req.Stock, req.Code, req.Published, req.CreationDate, req.Active)
 		if err != nil {
 			ctx.JSON(404, gin.H{"error": err.Error()})
 			return
@@ -145,7 +146,7 @@ func (c *Product) Delete(hardDelete bool) gin.HandlerFunc {
 				return
 			}
 
-			products, err := c.service.HardDelete(int(id))
+			products, err := c.service.HardDelete(context.Background(), int(id))
 			if err != nil {
 				ctx.JSON(404, gin.H{"error": err.Error()})
 				return
@@ -162,7 +163,7 @@ func (c *Product) Delete(hardDelete bool) gin.HandlerFunc {
 				return
 			}
 
-			products, err := c.service.Delete(int(id))
+			products, err := c.service.Delete(context.Background(), int(id))
 			if err != nil {
 				ctx.JSON(404, gin.H{"error": err.Error()})
 				return
@@ -192,7 +193,7 @@ func (c *Product) UpdateNameAndPrice() gin.HandlerFunc {
 			return
 		}
 
-		updatedProduct, err := c.service.UpdateNameAndPrice(int(id), req.Name, req.Price)
+		updatedProduct, err := c.service.UpdateNameAndPrice(context.Background(), int(id), req.Name, req.Price)
 		if err != nil {
 			ctx.JSON(404, gin.H{"error": err.Error()})
 			return

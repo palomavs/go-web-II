@@ -1,12 +1,18 @@
 package products
 
+import (
+	"context"
+
+	"github.com/palomavs/go-web-II/internal/domain"
+)
+
 type Service interface {
-	GetAll() ([]Product, error)
-	Store(name, color string, price float64, stock int, code string, published bool, creationDate string, active bool) (Product, error)
-	Update(id int, name, color string, price float64, stock int, code string, published bool, creationDate string, active bool) (Product, error)
-	UpdateNameAndPrice(id int, name string, price float64) (Product, error)
-	HardDelete(id int) ([]Product, error)
-	Delete(id int) ([]Product, error)
+	GetAll(ctx context.Context) ([]domain.Product, error)
+	Store(ctx context.Context, name, color string, price float64, stock int, code string, published bool, creationDate string, active bool) (domain.Product, error)
+	Update(ctx context.Context, id int, name, color string, price float64, stock int, code string, published bool, creationDate string, active bool) (domain.Product, error)
+	UpdateNameAndPrice(ctx context.Context, id int, name string, price float64) (domain.Product, error)
+	HardDelete(ctx context.Context, id int) ([]domain.Product, error)
+	Delete(ctx context.Context, id int) ([]domain.Product, error)
 }
 
 type service struct {
@@ -17,8 +23,8 @@ func NewService(r Repository) Service {
 	return &service{repository: r}
 }
 
-func (s *service) GetAll() ([]Product, error) {
-	products, err := s.repository.GetAll()
+func (s *service) GetAll(ctx context.Context) ([]domain.Product, error) {
+	products, err := s.repository.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -26,33 +32,33 @@ func (s *service) GetAll() ([]Product, error) {
 	return products, nil
 }
 
-func (s *service) Store(name, color string, price float64, stock int, code string, published bool, creationDate string, active bool) (Product, error) {
-	lastID, err := s.repository.LastID()
+func (s *service) Store(ctx context.Context, name, color string, price float64, stock int, code string, published bool, creationDate string, active bool) (domain.Product, error) {
+	lastID, err := s.repository.LastID(ctx)
 	if err != nil {
-		return Product{}, err
+		return domain.Product{}, err
 	}
 	lastID++
 
-	newProduct, err := s.repository.Store(lastID, name, color, price, stock, code, published, creationDate, active)
+	newProduct, err := s.repository.Store(ctx, lastID, name, color, price, stock, code, published, creationDate, active)
 	if err != nil {
-		return Product{}, err
+		return domain.Product{}, err
 	}
 
 	return newProduct, nil
 }
 
-func (s *service) Update(id int, name, color string, price float64, stock int, code string, published bool, creationDate string, active bool) (Product, error) {
-	return s.repository.Update(id, name, color, price, stock, code, published, creationDate, active)
+func (s *service) Update(ctx context.Context, id int, name, color string, price float64, stock int, code string, published bool, creationDate string, active bool) (domain.Product, error) {
+	return s.repository.Update(ctx, id, name, color, price, stock, code, published, creationDate, active)
 }
 
-func (s *service) HardDelete(id int) ([]Product, error) {
-	return s.repository.HardDelete(id)
+func (s *service) HardDelete(ctx context.Context, id int) ([]domain.Product, error) {
+	return s.repository.HardDelete(ctx, id)
 }
 
-func (s *service) Delete(id int) ([]Product, error) {
-	return s.repository.Delete(id)
+func (s *service) Delete(ctx context.Context, id int) ([]domain.Product, error) {
+	return s.repository.Delete(ctx, id)
 }
 
-func (s *service) UpdateNameAndPrice(id int, name string, price float64) (Product, error) {
-	return s.repository.UpdateNameAndPrice(id, name, price)
+func (s *service) UpdateNameAndPrice(ctx context.Context, id int, name string, price float64) (domain.Product, error) {
+	return s.repository.UpdateNameAndPrice(ctx, id, name, price)
 }
