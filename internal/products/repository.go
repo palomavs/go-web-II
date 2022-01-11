@@ -32,7 +32,6 @@ func (r *repository) GetAll(ctx context.Context) ([]domain.Product, error) {
 	if err := r.db.Read(&products); err != nil {
 		return []domain.Product{}, err
 	}
-
 	return products, nil
 }
 
