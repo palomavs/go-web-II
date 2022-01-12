@@ -36,7 +36,7 @@ func (r *repository) GetAll(ctx context.Context) ([]domain.Product, error) {
 }
 
 func (r *repository) Store(ctx context.Context, id int, name, color string, price float64, stock int, code string, published bool, creationDate string, active bool) (domain.Product, error) {
-	newProduct := domain.Product{id, name, color, price, stock, code, published, creationDate, active}
+	newProduct := domain.Product{Id: id, Name: name, Color: color, Price: price, Stock: stock, Code: code, Published: published, CreationDate: creationDate, Active: active}
 	var products []domain.Product
 
 	//Lo vamos a sobreescribir completo, así que necesitamos leerlo antes

@@ -49,5 +49,8 @@ func main() {
 		pr.DELETE("/hardDelete/:id", pc.ValidateToken, pc.Delete(true))
 		pr.PATCH("/:id", pc.ValidateToken, pc.UpdateNameAndPrice())
 	}
-	r.Run()
+	err = r.Run()
+	if err != nil {
+		log.Fatal("error al intentar correr el server")
+	}
 }
